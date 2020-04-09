@@ -4,6 +4,8 @@ import 'package:cmpe277_project/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'app.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -23,7 +25,7 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (_) => AuthProvider()),
             ChangeNotifierProvider(create: (_) => ThemeProvider())
           ],
-          child: Login(),
+          child: App(),
         ));
   }
 }

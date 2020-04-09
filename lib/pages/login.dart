@@ -1,3 +1,5 @@
+import 'package:cmpe277_project/pages/register.dart';
+import 'package:cmpe277_project/providers/auth_provider.dart';
 import 'package:cmpe277_project/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +19,7 @@ class _LoginState extends State<Login> {
     double rpx = MediaQuery.of(context).size.width / 750;
     double hrpx = MediaQuery.of(context).size.height / 750;
     final theme = Provider.of<ThemeProvider>(context);
+    final auth = Provider.of<AuthProvider>(context);
     return GestureDetector(
         onTap: () {
           FocusScopeNode currentFocus = FocusScope.of(context);
@@ -94,6 +97,7 @@ class _LoginState extends State<Login> {
                                 // Scaffold.of(context).showSnackBar(
                                 //     SnackBar(content: Text('Processing Data')));
                                 print("login");
+                                auth.handleLogin();
                               }
                             },
                             child: Text("Log in",
@@ -110,6 +114,12 @@ class _LoginState extends State<Login> {
                             GestureDetector(
                               onTap: () {
                                 print('sign up page');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          RegisterPage(theme: theme)),
+                                );
                               },
                               child: Text(' Sign up',
                                   style: TextStyle(

@@ -6,4 +6,9 @@ class AuthProvider with ChangeNotifier {
   AuthProvider() {
     token = '';
   }
+
+  handleLogin() {
+    token = '1234';
+    notifyListeners();
+  }
 }
