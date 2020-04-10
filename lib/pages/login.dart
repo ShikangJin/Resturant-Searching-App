@@ -123,7 +123,7 @@ class _LoginState extends State<Login> {
                               },
                               child: Text(' Sign up',
                                   style: TextStyle(
-                                      color: Color(theme.secondColor),
+                                      color: Color(theme.thirdColor),
                                       fontSize: 16)),
                             )
                           ],
