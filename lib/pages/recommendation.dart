@@ -32,8 +32,8 @@ class _RecommendationState extends State<Recommendation> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     ...resturants.recommendationList.map(
-                      (recommendation) => Resturant.createItem(
-                          recommendation, theme, hrpx, rpx),
+                      (recommendation) => Resturant.createItem(recommendation,
+                          theme, hrpx, rpx, context, resturants),
                     )
                   ],
                 )),

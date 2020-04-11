@@ -17,7 +17,8 @@ class ResturantProvider with ChangeNotifier {
           'https://cdn.pixabay.com/photo/2019/02/22/19/54/restaurant-4014286_960_720.jpg',
           4.0,
           '\$\$',
-          ['Desserts, Chinese']));
+          ['Desserts, Chinese'],
+          '50 Skyport Dr, Ste 20, North San Jose'));
     for (var i = 0; i < 4; i++)
       recommendationList.add(Resturant(
           12,
@@ -25,7 +26,8 @@ class ResturantProvider with ChangeNotifier {
           'https://cdn.pixabay.com/photo/2019/02/22/19/54/restaurant-4014286_960_720.jpg',
           4.0,
           '\$\$',
-          ['Desserts, Chinese']));
+          ['Desserts, Chinese'],
+          '50 Skyport Dr, Ste 20, North San Jose'));
     for (var i = 0; i < 10; i++) {
       searchResult.add(Resturant(
           12,
@@ -33,7 +35,8 @@ class ResturantProvider with ChangeNotifier {
           'https://cdn.pixabay.com/photo/2019/02/22/19/54/restaurant-4014286_960_720.jpg',
           4.0,
           '\$',
-          ['Ramen, Japenese']));
+          ['Ramen, Japenese'],
+          '50 Skyport Dr, Ste 20, North San Jose'));
     }
   }
 }

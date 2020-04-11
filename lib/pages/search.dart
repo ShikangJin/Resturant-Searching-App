@@ -55,8 +55,8 @@ class _SearchState extends State<Search> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             ...resturants.feedList.map(
-                              (feed) =>
-                                  Resturant.createItem(feed, theme, hrpx, rpx),
+                              (feed) => Resturant.createItem(
+                                  feed, theme, hrpx, rpx, context, resturants),
                             )
                           ],
                         )),
@@ -110,7 +110,8 @@ class _SearchState extends State<Search> {
                 crossAxisSpacing: 10,
                 crossAxisCount: 1,
                 onItemFound: (Resturant resturant, int index) {
-                  return Resturant.createItem(resturant, theme, hrpx, rpx);
+                  return Resturant.createItem(
+                      resturant, theme, hrpx, rpx, context, resturants);
                 },
               ),
             )));
