@@ -1,5 +1,6 @@
 import 'package:cmpe277_project/pages/login.dart';
 import 'package:cmpe277_project/providers/auth_provider.dart';
+import 'package:cmpe277_project/providers/resturant_provider.dart';
 import 'package:cmpe277_project/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,8 @@ class MyApp extends StatelessWidget {
         home: MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (_) => AuthProvider()),
-            ChangeNotifierProvider(create: (_) => ThemeProvider())
+            ChangeNotifierProvider(create: (_) => ThemeProvider()),
+            ChangeNotifierProvider(create: (_) => ResturantProvider()),
           ],
           child: App(),
         ));
