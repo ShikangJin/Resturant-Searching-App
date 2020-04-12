@@ -1,4 +1,4 @@
-import 'package:cmpe277_project/pages/more.dart';
+import 'package:cmpe277_project/pages/me.dart';
 import 'package:cmpe277_project/pages/my_favorite.dart';
 import 'package:cmpe277_project/pages/recommendation.dart';
 import 'package:cmpe277_project/pages/search.dart';
@@ -73,7 +73,7 @@ class _HomeState extends State<Home> {
       case 2:
         return new MyFavorite();
       case 3:
-        return new More();
+        return new Me();
       default:
         return new Search();
     }
@@ -113,8 +113,8 @@ class _HomeState extends State<Home> {
                 onPressed: _updateIndex,
               ),
               buildTabItem(
-                text: "More",
-                icon: Icons.more_horiz,
+                text: "Me",
+                icon: Icons.person,
                 textColor: Color(theme.thirdColor),
                 index: 3,
                 onPressed: _updateIndex,

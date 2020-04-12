@@ -15,10 +15,6 @@
 *.iws
 .idea/
 
-# files contain google key
-android/app/src/main/AndroidManifest.xml
-ios/Runner/AppDelegate.swift
-
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
@@ -45,3 +41,5 @@ app.*.map.json
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+android/app/src/main/AndroidManifest.xml
+ios/Runner/AppDelegate.swift

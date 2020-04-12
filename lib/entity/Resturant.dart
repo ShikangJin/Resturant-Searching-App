@@ -14,15 +14,17 @@ class Resturant {
   Resturant(this.id, this.name, this.imageUrl, this.rate, this.price, this.type,
       this.address);
 
-  static getTags(type) {
+  static getTags(type, {double size}) {
     final List fixedList = Iterable<int>.generate(type.length).toList();
 
     return fixedList.map((idx) {
       String tag = type[idx];
       if (idx == type.length - 1) {
-        return Text('$tag');
+        return Text('$tag',
+            style: TextStyle(fontSize: size != null ? size : 14));
       }
-      return Text('$tag, ');
+      return Text('$tag, ',
+          style: TextStyle(fontSize: size != null ? size : 14));
     });
   }
 
