@@ -1,4 +1,5 @@
 import 'package:cmpe277_project/entity/Resturant.dart';
+import 'package:cmpe277_project/pages/resturant.dart';
 import 'package:cmpe277_project/providers/resturant_provider.dart';
 import 'package:cmpe277_project/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,18 @@ class _MyFavoriteState extends State<MyFavorite> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              ...resturants.favoriteList.map((resturant) => Container(
+              ...resturants.favoriteList.map((resturant) => InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ResturantPage(
+                                  theme: theme,
+                                  resturants: resturants,
+                                  curResturant: resturant,
+                                )));
+                  },
+                  child: Container(
                     decoration: BoxDecoration(
                         border: Border(
                             bottom:
@@ -105,7 +117,7 @@ class _MyFavoriteState extends State<MyFavorite> {
                         )
                       ],
                     ),
-                  ))
+                  )))
             ],
           ),
         ),
