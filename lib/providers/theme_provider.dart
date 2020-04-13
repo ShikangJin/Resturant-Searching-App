@@ -8,11 +8,13 @@ class ThemeProvider with ChangeNotifier {
   int secondColor;
   int thirdColor;
   int fourthColor;
+  Color textColor;
 
   ThemeProvider() {
     primaryColor = altScheme[0];
     secondColor = altScheme[1];
     thirdColor = altScheme[2];
     fourthColor = altScheme[3];
+    textColor = Colors.grey[300];
   }
 }

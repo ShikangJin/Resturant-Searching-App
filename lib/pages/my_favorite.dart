@@ -23,7 +23,7 @@ class _MyFavoriteState extends State<MyFavorite> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(theme.primaryColor),
-        title: Text("My Favorite", style: TextStyle(color: Colors.white)),
+        title: Text("My Favorite", style: TextStyle(color: theme.textColor)),
       ),
       body: Container(
         padding:

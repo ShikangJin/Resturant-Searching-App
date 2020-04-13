@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class Resturant {
-  final int id;
+  final String id;
   final String name;
   final String imageUrl;
   final double rate;
   final String price;
   final List<String> type;
   final String address;
+  final double lat;
+  final double lng;
 
   Resturant(this.id, this.name, this.imageUrl, this.rate, this.price, this.type,
-      this.address);
+      this.address, this.lat, this.lng);
 
   static getTags(type, {double size}) {
     final List fixedList = Iterable<int>.generate(type.length).toList();

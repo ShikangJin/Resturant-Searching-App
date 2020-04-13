@@ -21,25 +21,25 @@ class ResturantPage extends StatefulWidget {
 
 class _ResturantPageState extends State<ResturantPage> {
   Completer<GoogleMapController> _controller = Completer();
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 20,
-  );
 
   @override
   Widget build(BuildContext context) {
     double rpx = MediaQuery.of(context).size.width / 750;
     double hrpx = MediaQuery.of(context).size.height / 750;
+    final CameraPosition _kGooglePlex = CameraPosition(
+      target: LatLng(widget.curResturant.lat, widget.curResturant.lng),
+      zoom: 20,
+    );
     Set<Marker> markers = Set();
     markers.add(Marker(
         markerId: MarkerId(widget.curResturant.name),
-        position: LatLng(37.42796133580664, -122.085749655962)));
+        position: LatLng(widget.curResturant.lat, widget.curResturant.lng)));
     return Scaffold(
         appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.white),
+          iconTheme: IconThemeData(color: widget.theme.textColor),
           title: Text(
             widget.curResturant.name,
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: widget.theme.textColor),
           ),
           backgroundColor: Color(widget.theme.primaryColor),
         ),

@@ -33,7 +33,8 @@ class _HomeState extends State<Home> {
       IconData icon,
       Color textColor,
       int index,
-      ValueChanged<int> onPressed}) {
+      ValueChanged<int> onPressed,
+      theme}) {
     return Expanded(
       child: SizedBox(
         height: 70,
@@ -47,13 +48,12 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Icon(icon,
-                    color: _currentIdx == index ? textColor : Colors.grey[300],
+                    color: _currentIdx == index ? textColor : theme.textColor,
                     size: 30),
                 Text(
                   text,
                   style: TextStyle(
-                      color:
-                          _currentIdx == index ? textColor : Colors.grey[300],
+                      color: _currentIdx == index ? textColor : theme.textColor,
                       fontSize: 14),
                 )
               ],
@@ -92,33 +92,33 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               buildTabItem(
-                text: "Search",
-                icon: Icons.search,
-                textColor: Color(theme.thirdColor),
-                index: 0,
-                onPressed: _updateIndex,
-              ),
+                  text: "Search",
+                  icon: Icons.search,
+                  textColor: Color(theme.thirdColor),
+                  index: 0,
+                  onPressed: _updateIndex,
+                  theme: theme),
               buildTabItem(
-                text: "Recommend",
-                icon: Icons.star,
-                textColor: Color(theme.thirdColor),
-                index: 1,
-                onPressed: _updateIndex,
-              ),
+                  text: "Recommend",
+                  icon: Icons.star,
+                  textColor: Color(theme.thirdColor),
+                  index: 1,
+                  onPressed: _updateIndex,
+                  theme: theme),
               buildTabItem(
-                text: "Favorite",
-                icon: Icons.favorite,
-                textColor: Color(theme.thirdColor),
-                index: 2,
-                onPressed: _updateIndex,
-              ),
+                  text: "Favorite",
+                  icon: Icons.favorite,
+                  textColor: Color(theme.thirdColor),
+                  index: 2,
+                  onPressed: _updateIndex,
+                  theme: theme),
               buildTabItem(
-                text: "Me",
-                icon: Icons.person,
-                textColor: Color(theme.thirdColor),
-                index: 3,
-                onPressed: _updateIndex,
-              ),
+                  text: "Me",
+                  icon: Icons.person,
+                  textColor: Color(theme.thirdColor),
+                  index: 3,
+                  onPressed: _updateIndex,
+                  theme: theme),
             ],
           ),
         ),

@@ -1,9 +1,9 @@
 import 'package:cmpe277_project/entity/Resturant.dart';
+import 'package:cmpe277_project/providers/auth_provider.dart';
 import 'package:cmpe277_project/providers/resturant_provider.dart';
 import 'package:cmpe277_project/providers/theme_provider.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
 class Search extends StatefulWidget {
@@ -14,13 +14,28 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-  final SearchBarController<Resturant> _searchBarController =
-      SearchBarController();
+  SearchBarController<Resturant> _searchBarController;
+  bool initialFeed;
+  bool searched;
+  bool searching;
+  List<String> filters;
+  String sort;
 
   @override
   @override
   void initState() {
     super.initState();
+    _searchBarController = SearchBarController();
+    initialFeed = false;
+    searched = false;
+    searching = false;
+    filters = new List();
+    sort = 'default';
+  }
+
+  parsePrice() {
+    String price = filters.join(',');
+    return price.length > 0 ? price : null;
   }
 
   @override
@@ -29,6 +44,20 @@ class _SearchState extends State<Search> {
     double hrpx = MediaQuery.of(context).size.height / 750;
     final theme = Provider.of<ThemeProvider>(context);
     final resturants = Provider.of<ResturantProvider>(context);
+    final auth = Provider.of<AuthProvider>(context);
+    if (!initialFeed) {
+      setState(() {
+        searching = true;
+      });
+      resturants
+          .getResturantFeed(auth, sort: sort, price: parsePrice())
+          .then((_) {
+        setState(() {
+          searching = false;
+        });
+      });
+      initialFeed = true;
+    }
     return Scaffold(
         body: Container(
             padding: EdgeInsets.symmetric(horizontal: 14 * rpx),
@@ -40,7 +69,12 @@ class _SearchState extends State<Search> {
                     EdgeInsets.symmetric(horizontal: 24 * rpx, vertical: 10),
                 onSearch: (str) async {
                   // await Future.delayed(Duration(seconds: 3));
-                  return resturants.searchResult;
+                  print('start search');
+                  var listResult = await resturants.searchResturants(auth,
+                      term: str, price: parsePrice(), sort: sort);
+                  // print(listResult);
+                  searched = true;
+                  return listResult;
                 },
                 searchBarController: _searchBarController,
                 placeHolder: Container(
@@ -49,17 +83,19 @@ class _SearchState extends State<Search> {
                   // decoration: BoxDecoration(
                   //     border: Border.all(color: Color(theme.thirdColor))),
                   child: Center(
-                    child: SingleChildScrollView(
-                        controller: ScrollController(),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ...resturants.feedList.map(
-                              (feed) => Resturant.createItem(
-                                  feed, theme, hrpx, rpx, context, resturants),
-                            )
-                          ],
-                        )),
+                    child: searching
+                        ? CircularProgressIndicator()
+                        : SingleChildScrollView(
+                            controller: ScrollController(),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ...resturants.feedList.map(
+                                  (feed) => Resturant.createItem(feed, theme,
+                                      hrpx, rpx, context, resturants),
+                                )
+                              ],
+                            )),
                   ),
                 ),
                 cancellationWidget: Text(
@@ -77,34 +113,276 @@ class _SearchState extends State<Search> {
                         border: Border(
                             bottom: BorderSide(
                                 style: BorderStyle.solid,
-                                color: Colors.grey[300]))),
+                                color: theme.textColor))),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        RaisedButton(
-                          child: Text("\$"),
-                          onPressed: () {
-                            // _searchBarController.sortList((Post a, Post b) {
-                            //   return a.body.compareTo(b.body);
-                            // });
-                          },
-                        ),
-                        RaisedButton(
-                          child: Text("\$\$"),
-                          onPressed: () {
-                            // _searchBarController.removeSort();
-                          },
-                        ),
-                        RaisedButton(
-                          child: Text("\$\$\$"),
-                          onPressed: () {
-                            // isReplay = !isReplay;
-                            // _searchBarController.replayLastSearch();
-                          },
-                        ),
+                        Container(
+                            child: Row(
+                          children: <Widget>[
+                            RaisedButton(
+                              color: filters.contains('1')
+                                  ? Color(theme.primaryColor)
+                                  : theme.textColor,
+                              child: Text("\$",
+                                  style: TextStyle(
+                                      color: filters.contains('1')
+                                          ? theme.textColor
+                                          : Colors.black)),
+                              onPressed: () {
+                                bool actived = filters.contains("1");
+                                if (actived) {
+                                  filters.remove('1');
+                                } else {
+                                  filters.add('1');
+                                }
+                                setState(() {
+                                  filters = filters;
+                                });
+                                _searchBarController.replayLastSearch();
+                                if (!searched) {
+                                  setState(() {
+                                    searching = true;
+                                  });
+                                  resturants
+                                      .getResturantFeed(auth,
+                                          sort: sort, price: parsePrice())
+                                      .then((_) {
+                                    setState(() {
+                                      searching = false;
+                                    });
+                                  });
+                                }
+                                // _searchBarController.sortList((Post a, Post b) {
+                                //   return a.body.compareTo(b.body);
+                                // });
+                              },
+                            ),
+                            RaisedButton(
+                                color: filters.contains('2')
+                                    ? Color(theme.primaryColor)
+                                    : theme.textColor,
+                                child: Text("\$\$",
+                                    style: TextStyle(
+                                        color: filters.contains('2')
+                                            ? theme.textColor
+                                            : Colors.black)),
+                                onPressed: () {
+                                  bool actived = filters.contains("2");
+                                  if (actived) {
+                                    filters.remove('2');
+                                  } else {
+                                    filters.add('2');
+                                  }
+                                  setState(() {
+                                    filters = filters;
+                                  });
+                                  _searchBarController.replayLastSearch();
+                                  if (!searched) {
+                                    setState(() {
+                                      searching = true;
+                                    });
+                                    resturants
+                                        .getResturantFeed(auth,
+                                            sort: sort, price: parsePrice())
+                                        .then((_) {
+                                      setState(() {
+                                        searching = false;
+                                      });
+                                    });
+                                  }
+                                }),
+                            RaisedButton(
+                              color: filters.contains('3')
+                                  ? Color(theme.primaryColor)
+                                  : theme.textColor,
+                              child: Text("\$\$\$",
+                                  style: TextStyle(
+                                      color: filters.contains('3')
+                                          ? theme.textColor
+                                          : Colors.black)),
+                              onPressed: () {
+                                bool actived = filters.contains("3");
+                                if (actived) {
+                                  filters.remove('3');
+                                } else {
+                                  filters.add('3');
+                                }
+                                setState(() {
+                                  filters = filters;
+                                });
+                                _searchBarController.replayLastSearch();
+                                if (!searched) {
+                                  setState(() {
+                                    searching = true;
+                                  });
+                                  resturants
+                                      .getResturantFeed(auth,
+                                          sort: sort, price: parsePrice())
+                                      .then((_) {
+                                    setState(() {
+                                      searching = false;
+                                    });
+                                  });
+                                }
+                              },
+                            )
+                          ],
+                        )),
+                        Container(
+                            margin: EdgeInsets.only(left: 20 * rpx),
+                            child: RaisedButton(
+                              onPressed: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return Container(
+                                        height: 300 * hrpx,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(
+                                                alignment: Alignment.center,
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 16 * hrpx),
+                                                margin: EdgeInsets.symmetric(
+                                                  horizontal: 10 * rpx,
+                                                ),
+                                                child: Text('Sort by',
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold))),
+                                            Container(
+                                              width: 750 * rpx,
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: 16 * hrpx),
+                                              margin: EdgeInsets.symmetric(
+                                                horizontal: 20 * rpx,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                  border: Border(
+                                                      top: BorderSide(
+                                                          color: Color(theme
+                                                              .thirdColor)),
+                                                      bottom: BorderSide(
+                                                          color: Color(theme
+                                                              .thirdColor)))),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: <Widget>[
+                                                  Text('Recommended (default)',
+                                                      style: TextStyle(
+                                                          fontSize: 18)),
+                                                  Radio(
+                                                    activeColor:
+                                                        Color(theme.thirdColor),
+                                                    value: 'default',
+                                                    groupValue: sort,
+                                                    onChanged: (String value) {
+                                                      setState(() {
+                                                        sort = value;
+                                                        searching = true;
+                                                      });
+                                                      if (!searched) {
+                                                        resturants
+                                                            .getResturantFeed(
+                                                                auth,
+                                                                price:
+                                                                    parsePrice(),
+                                                                sort: sort)
+                                                            .then((_) {
+                                                          setState(() {
+                                                            searching = false;
+                                                          });
+                                                        });
+                                                      } else {
+                                                        _searchBarController
+                                                            .replayLastSearch();
+                                                      }
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            Container(
+                                                width: 750 * rpx,
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: 16 * hrpx),
+                                                margin: EdgeInsets.symmetric(
+                                                  horizontal: 20 * rpx,
+                                                ),
+                                                // decoration: BoxDecoration(
+                                                //     border: Border(
+                                                //         bottom: BorderSide(
+                                                //             color: Color(theme
+                                                //                 .thirdColor)))),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: <Widget>[
+                                                    Text('Rating',
+                                                        style: TextStyle(
+                                                            fontSize: 18)),
+                                                    Radio(
+                                                      activeColor: Color(
+                                                          theme.thirdColor),
+                                                      value: 'rating',
+                                                      groupValue: sort,
+                                                      onChanged:
+                                                          (String value) {
+                                                        setState(() {
+                                                          sort = value;
+                                                          searching = true;
+                                                        });
+                                                        if (!searched) {
+                                                          resturants
+                                                              .getResturantFeed(
+                                                                  auth,
+                                                                  price:
+                                                                      parsePrice(),
+                                                                  sort: sort)
+                                                              .then((_) {
+                                                            setState(() {
+                                                              searching = false;
+                                                            });
+                                                          });
+                                                        } else {
+                                                          _searchBarController
+                                                              .replayLastSearch();
+                                                        }
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                ))
+                                          ],
+                                        ),
+                                      );
+                                    });
+                              },
+                              child: Text('Sort'),
+                            ))
                       ],
                     )),
                 onCancelled: () {
                   print("Cancelled triggered");
+                  searched = false;
+                  setState(() {
+                    searching = true;
+                  });
+                  resturants
+                      .getResturantFeed(auth, sort: sort, price: parsePrice())
+                      .then((_) {
+                    setState(() {
+                      searching = false;
+                    });
+                  });
                 },
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10,

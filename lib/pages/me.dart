@@ -20,7 +20,8 @@ class _MeState extends State<Me> {
     return Scaffold(
         appBar: AppBar(
             backgroundColor: Color(theme.primaryColor),
-            title: Text(auth.user.name, style: TextStyle(color: Colors.white))),
+            title:
+                Text(auth.user.name, style: TextStyle(color: theme.textColor))),
         body: Container(
           child: SingleChildScrollView(
               controller: ScrollController(),
@@ -73,7 +74,7 @@ class _MeState extends State<Me> {
                           auth.handleLogout();
                         },
                         child: Text("Log out",
-                            style: TextStyle(color: Colors.white)),
+                            style: TextStyle(color: theme.textColor)),
                       )),
                 ],
               )),

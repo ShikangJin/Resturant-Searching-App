@@ -11,7 +11,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context);
     return Container(
-      child: auth.token == '1234' ? Home() : Login(),
+      child: auth.token != '' ? Home() : Login(),
     );
   }
 }

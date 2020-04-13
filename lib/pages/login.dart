@@ -14,6 +14,16 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
 
+  String email;
+  String password;
+
+  @override
+  void initState() {
+    super.initState();
+    email = '';
+    password = '';
+  }
+
   @override
   Widget build(BuildContext context) {
     double rpx = MediaQuery.of(context).size.width / 750;
@@ -54,8 +64,11 @@ class _LoginState extends State<Login> {
                       TextFormField(
                         decoration: const InputDecoration(
                           icon: Icon(Icons.person),
-                          labelText: 'Username',
+                          labelText: 'User Email',
                         ),
+                        onChanged: (value) {
+                          email = value;
+                        },
                         onSaved: (String value) {
                           // This optional block of code can be used to run
                           // code when the user saves the form.
@@ -72,6 +85,9 @@ class _LoginState extends State<Login> {
                           icon: Icon(Icons.lock),
                           labelText: 'Password',
                         ),
+                        onChanged: (value) {
+                          password = value;
+                        },
                         onSaved: (String value) {
                           // This optional block of code can be used to run
                           // code when the user saves the form.
@@ -97,12 +113,11 @@ class _LoginState extends State<Login> {
                                 // Scaffold.of(context).showSnackBar(
                                 //     SnackBar(content: Text('Processing Data')));
                                 print("login");
-                                auth.handleLogin();
+                                auth.handleLogin(email, password, context);
                               }
                             },
                             child: Text("Log in",
-                                style:
-                                    TextStyle(color: Color(theme.thirdColor))),
+                                style: TextStyle(color: theme.textColor)),
                           )),
                       Container(
                         margin: EdgeInsets.only(top: 12 * hrpx),
@@ -117,8 +132,8 @@ class _LoginState extends State<Login> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          RegisterPage(theme: theme)),
+                                      builder: (context) => RegisterPage(
+                                          theme: theme, auth: auth)),
                                 );
                               },
                               child: Text(' Sign up',

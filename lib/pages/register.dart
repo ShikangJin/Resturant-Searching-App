@@ -1,17 +1,34 @@
+import 'package:cmpe277_project/providers/auth_provider.dart';
 import 'package:cmpe277_project/providers/theme_provider.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class RegisterPage extends StatefulWidget {
-  RegisterPage({Key key, @required this.theme}) : super(key: key);
+  RegisterPage({Key key, @required this.theme, @required this.auth})
+      : super(key: key);
   final theme;
-
+  final auth;
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
+
+  String name;
+  String password;
+  String confirmPassword;
+  String email;
+
+  @override
+  void initState() {
+    super.initState();
+    name = '';
+    password = '';
+    confirmPassword = '';
+    email = '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,14 +43,10 @@ class _RegisterPageState extends State<RegisterPage> {
       },
       child: Scaffold(
           appBar: AppBar(
-            backgroundColor: Colors.white,
-            title: Text('Register'),
-            leading: GestureDetector(
-              child: Icon(Icons.arrow_back),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
+            backgroundColor: Color(widget.theme.primaryColor),
+            title: Text('Register',
+                style: TextStyle(color: widget.theme.textColor)),
+            iconTheme: IconThemeData(color: widget.theme.textColor),
           ),
           body: Column(
             // margin: EdgeInsets.symmetric(horizontal: 12 * rpx),
@@ -55,11 +68,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             // This optional block of code can be used to run
                             // code when the user saves the form.
                           },
+                          onChanged: (value) {
+                            name = value;
+                          },
                           validator: (value) {
-                            // if (value.isEmpty) {
-                            //   return 'Username';
-                            // }
-                            // return null;
+                            if (value.isEmpty) {
+                              return 'Please enter an username';
+                            }
+                            return null;
                           },
                         ),
                         TextFormField(
@@ -70,11 +86,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             // This optional block of code can be used to run
                             // code when the user saves the form.
                           },
+                          onChanged: (value) {
+                            password = value;
+                          },
                           validator: (value) {
-                            // if (value.isEmpty) {
-                            //   return 'Username';
-                            // }
-                            // return null;
+                            if (value.isEmpty) {
+                              return 'Please enter a password';
+                            }
+                            return null;
                           },
                         ),
                         TextFormField(
@@ -85,11 +104,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             // This optional block of code can be used to run
                             // code when the user saves the form.
                           },
+                          onChanged: (value) {
+                            confirmPassword = value;
+                          },
                           validator: (value) {
-                            // if (value.isEmpty) {
-                            //   return 'Username';
-                            // }
-                            // return null;
+                            if (value.isEmpty || value != password) {
+                              return 'Passwords do not match';
+                            }
+                            return null;
                           },
                         ),
                         TextFormField(
@@ -100,11 +122,17 @@ class _RegisterPageState extends State<RegisterPage> {
                             // This optional block of code can be used to run
                             // code when the user saves the form.
                           },
+                          onChanged: (value) {
+                            email = value;
+                          },
                           validator: (value) {
-                            // if (value.isEmpty) {
-                            //   return 'Username';
-                            // }
-                            // return null;
+                            Pattern pattern =
+                                r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                            RegExp regex = new RegExp(pattern);
+                            if (!regex.hasMatch(value))
+                              return 'Please enter valid email';
+                            else
+                              return null;
                           },
                         ),
                       ],
@@ -125,10 +153,26 @@ class _RegisterPageState extends State<RegisterPage> {
                       // Scaffold.of(context).showSnackBar(
                       //     SnackBar(content: Text('Processing Data')));
                       print("signup submit");
+                      widget.auth
+                          .handleRegister(email, name, password)
+                          .then((response) {
+                        email = '';
+                        name = '';
+                        password = '';
+                        confirmPassword = '';
+                        // _formKey.currentState.reset();
+                        if (response.data != null &&
+                            response.data['message'] == 'user created') {
+                          // Scaffold.of(context).showSnackBar(
+                          //     SnackBar(content: Text('User created')));
+                          // print('pop sign up');
+                          Navigator.pop(context);
+                        }
+                      });
                     }
                   },
                   child: Text("Submit",
-                      style: TextStyle(color: Color(widget.theme?.thirdColor))),
+                      style: TextStyle(color: widget.theme.textColor)),
                 ),
               )
             ],
