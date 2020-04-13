@@ -5,11 +5,6 @@ Future login(String email, String password) async {
   print(email);
   print(password);
   var result = await Dio().post("http://10.0.2.2:8080/auth/login",
-      options: Options(
-          followRedirects: false,
-          validateStatus: (status) {
-            return status < 500;
-          }),
       data: {"email": email, "password": password}).catchError((error) {
     print(error);
   });
@@ -22,17 +17,11 @@ Future signUp(String name, String email, String password) async {
   print(name);
   print(email);
   print(password);
-  var result = await Dio().post("http://10.0.2.2:8080/auth/signup",
-      options: Options(
-          followRedirects: false,
-          validateStatus: (status) {
-            return status < 500;
-          }),
-      data: {
-        "email": email,
-        "password": password,
-        "name": name
-      }).catchError((error) {
+  var result = await Dio().post("http://10.0.2.2:8080/auth/signup", data: {
+    "email": email,
+    "password": password,
+    "name": name
+  }).catchError((error) {
     print(error);
   });
   print(result);
