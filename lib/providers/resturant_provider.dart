@@ -1,3 +1,4 @@
+import 'package:cmpe277_project/entity/Comment.dart';
 import 'package:cmpe277_project/entity/Resturant.dart';
 import 'package:cmpe277_project/services/resturants_service.dart';
 import 'package:dio/dio.dart';
@@ -8,6 +9,8 @@ class ResturantProvider with ChangeNotifier {
   List<Resturant> recommendationList;
   List<Resturant> searchResult;
   List<Resturant> favoriteList;
+  List<Comment> commentList;
+  List<String> photoList;
 
   ResturantProvider() {
     feedList = new List();
@@ -105,5 +108,40 @@ class ResturantProvider with ChangeNotifier {
       }
     }
     notifyListeners();
+  }
+
+  Future getCommentByResturant(auth, String id) async {
+    print('get comment');
+    Response response = await getComment(auth, id);
+    commentList = new List();
+    if (response?.data != null && response.data['message'] == 'success') {
+      for (var i = 0; i < response.data['comments'].length; i++) {
+        final curCmt = response.data['comments'][i];
+        commentList.add(Comment(
+          curCmt['name'],
+          curCmt['text'],
+          curCmt['rating'].toDouble(),
+        ));
+      }
+    }
+    notifyListeners();
+  }
+
+  Future getDetail(auth, String id) async {
+    print('get detail');
+    Response response = await getResturantDetail(auth, id);
+    List<String> photoList = new List();
+    if (response?.data != null && response.data['message'] == 'success') {
+      print(response);
+      var photos = response.data['business']['photos'];
+      for (var i = 0; i < photos.length; i++) {
+        if (i != 0) {
+          var photo = photos[i];
+          photoList.add(photo.toString());
+        }
+      }
+    }
+    return photoList;
+    // notifyListeners();
   }
 }

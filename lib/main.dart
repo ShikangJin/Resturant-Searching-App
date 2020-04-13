@@ -18,9 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.grey,
-        ),
+        theme: ThemeData(primarySwatch: Colors.grey),
         home: MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (_) => AuthProvider()),

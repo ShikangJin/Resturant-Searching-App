@@ -31,7 +31,7 @@ class Resturant {
   }
 
   static Widget createItem(Resturant resturant, var theme, double hrpx,
-      double rpx, context, resturants) {
+      double rpx, context, resturants, auth) {
     return InkWell(
         onTap: () {
           Navigator.push(
@@ -41,6 +41,7 @@ class Resturant {
                         theme: theme,
                         resturants: resturants,
                         curResturant: resturant,
+                        auth: auth,
                       )));
         },
         child: Container(

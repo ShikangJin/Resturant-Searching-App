@@ -54,7 +54,8 @@ class _RecommendationState extends State<Recommendation> {
                               hrpx,
                               rpx,
                               context,
-                              resturants),
+                              resturants,
+                              auth),
                         )
                       ],
                     )),

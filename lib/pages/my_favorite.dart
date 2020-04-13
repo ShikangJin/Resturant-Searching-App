@@ -1,5 +1,6 @@
 import 'package:cmpe277_project/entity/Resturant.dart';
 import 'package:cmpe277_project/pages/resturant.dart';
+import 'package:cmpe277_project/providers/auth_provider.dart';
 import 'package:cmpe277_project/providers/resturant_provider.dart';
 import 'package:cmpe277_project/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _MyFavoriteState extends State<MyFavorite> {
     double hrpx = MediaQuery.of(context).size.height / 750;
     final theme = Provider.of<ThemeProvider>(context);
     final resturants = Provider.of<ResturantProvider>(context);
+    final auth = Provider.of<AuthProvider>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(theme.primaryColor),
@@ -39,6 +41,7 @@ class _MyFavoriteState extends State<MyFavorite> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => ResturantPage(
+                                  auth: auth,
                                   theme: theme,
                                   resturants: resturants,
                                   curResturant: resturant,

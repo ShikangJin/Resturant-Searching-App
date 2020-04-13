@@ -52,3 +52,33 @@ Future getFavoriteList(auth) async {
   });
   return result;
 }
+
+Future getComment(auth, String id) async {
+  print('http://10.0.2.2:8080/comment/$id');
+  var result = await Dio()
+      .get('http://10.0.2.2:8080/comment/$id',
+          options: Options(
+            headers: {
+              HttpHeaders.authorizationHeader: "Bearer " + auth.token,
+            },
+          ))
+      .catchError((error) {
+    print(error);
+  });
+  return result;
+}
+
+Future getResturantDetail(auth, String id) async {
+  print('http://10.0.2.2:8080/business/detail/$id');
+  var result = await Dio()
+      .get('http://10.0.2.2:8080/business/detail/$id',
+          options: Options(
+            headers: {
+              HttpHeaders.authorizationHeader: "Bearer " + auth.token,
+            },
+          ))
+      .catchError((error) {
+    print(error);
+  });
+  return result;
+}

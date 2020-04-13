@@ -92,7 +92,7 @@ class _SearchState extends State<Search> {
                               children: <Widget>[
                                 ...resturants.feedList.map(
                                   (feed) => Resturant.createItem(feed, theme,
-                                      hrpx, rpx, context, resturants),
+                                      hrpx, rpx, context, resturants, auth),
                                 )
                               ],
                             )),
@@ -238,131 +238,162 @@ class _SearchState extends State<Search> {
                                     builder: (context) {
                                       return Container(
                                         height: 300 * hrpx,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Container(
-                                                alignment: Alignment.center,
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 16 * hrpx),
-                                                margin: EdgeInsets.symmetric(
-                                                  horizontal: 10 * rpx,
-                                                ),
-                                                child: Text('Sort by',
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold))),
-                                            Container(
-                                              width: 750 * rpx,
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: 16 * hrpx),
-                                              margin: EdgeInsets.symmetric(
-                                                horizontal: 20 * rpx,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                  border: Border(
-                                                      top: BorderSide(
-                                                          color: Color(theme
-                                                              .thirdColor)),
-                                                      bottom: BorderSide(
-                                                          color: Color(theme
-                                                              .thirdColor)))),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  Text('Recommended (default)',
-                                                      style: TextStyle(
-                                                          fontSize: 18)),
-                                                  Radio(
-                                                    activeColor:
-                                                        Color(theme.thirdColor),
-                                                    value: 'default',
-                                                    groupValue: sort,
-                                                    onChanged: (String value) {
-                                                      setState(() {
-                                                        sort = value;
-                                                        searching = true;
-                                                      });
-                                                      if (!searched) {
-                                                        resturants
-                                                            .getResturantFeed(
-                                                                auth,
-                                                                price:
-                                                                    parsePrice(),
-                                                                sort: sort)
-                                                            .then((_) {
-                                                          setState(() {
-                                                            searching = false;
-                                                          });
-                                                        });
-                                                      } else {
-                                                        _searchBarController
-                                                            .replayLastSearch();
-                                                      }
-                                                      Navigator.pop(context);
-                                                    },
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Container(
-                                                width: 750 * rpx,
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 16 * hrpx),
-                                                margin: EdgeInsets.symmetric(
-                                                  horizontal: 20 * rpx,
-                                                ),
-                                                // decoration: BoxDecoration(
-                                                //     border: Border(
-                                                //         bottom: BorderSide(
-                                                //             color: Color(theme
-                                                //                 .thirdColor)))),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: <Widget>[
-                                                    Text('Rating',
+                                        color: Color(0xFF737373),
+                                        child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        const Radius.circular(
+                                                            20),
+                                                    topRight:
+                                                        const Radius.circular(
+                                                            20))),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Container(
+                                                    decoration: BoxDecoration(
+                                                        color: Color(
+                                                            theme.primaryColor),
+                                                        borderRadius: BorderRadius.only(
+                                                            topLeft: const Radius
+                                                                .circular(20),
+                                                            topRight: const Radius
+                                                                .circular(20))),
+                                                    alignment: Alignment.center,
+                                                    padding: EdgeInsets.symmetric(
+                                                        vertical: 16 * hrpx),
+                                                    // margin: EdgeInsets.symmetric(
+                                                    //   horizontal: 10 * rpx,
+                                                    // ),
+                                                    child: Text('Sort by',
                                                         style: TextStyle(
-                                                            fontSize: 18)),
-                                                    Radio(
-                                                      activeColor: Color(
-                                                          theme.thirdColor),
-                                                      value: 'rating',
-                                                      groupValue: sort,
-                                                      onChanged:
-                                                          (String value) {
-                                                        setState(() {
-                                                          sort = value;
-                                                          searching = true;
-                                                        });
-                                                        if (!searched) {
-                                                          resturants
-                                                              .getResturantFeed(
-                                                                  auth,
-                                                                  price:
-                                                                      parsePrice(),
-                                                                  sort: sort)
-                                                              .then((_) {
-                                                            setState(() {
-                                                              searching = false;
-                                                            });
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color: theme
+                                                                .textColor))),
+                                                Container(
+                                                  width: 750 * rpx,
+                                                  padding: EdgeInsets.symmetric(
+                                                      vertical: 16 * hrpx),
+                                                  margin: EdgeInsets.symmetric(
+                                                    horizontal: 20 * rpx,
+                                                  ),
+                                                  decoration: BoxDecoration(
+                                                      border: Border(
+                                                          top: BorderSide(
+                                                              color: theme
+                                                                  .textColor),
+                                                          bottom: BorderSide(
+                                                              color: theme
+                                                                  .textColor))),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: <Widget>[
+                                                      Text(
+                                                          'Recommended (default)',
+                                                          style: TextStyle(
+                                                              fontSize: 18)),
+                                                      Radio(
+                                                        activeColor: Color(
+                                                            theme.thirdColor),
+                                                        value: 'default',
+                                                        groupValue: sort,
+                                                        onChanged:
+                                                            (String value) {
+                                                          setState(() {
+                                                            sort = value;
+                                                            searching = true;
                                                           });
-                                                        } else {
-                                                          _searchBarController
-                                                              .replayLastSearch();
-                                                        }
-                                                        Navigator.pop(context);
-                                                      },
+                                                          if (!searched) {
+                                                            resturants
+                                                                .getResturantFeed(
+                                                                    auth,
+                                                                    price:
+                                                                        parsePrice(),
+                                                                    sort: sort)
+                                                                .then((_) {
+                                                              setState(() {
+                                                                searching =
+                                                                    false;
+                                                              });
+                                                            });
+                                                          } else {
+                                                            _searchBarController
+                                                                .replayLastSearch();
+                                                          }
+                                                          Navigator.pop(
+                                                              context);
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Container(
+                                                    width: 750 * rpx,
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical:
+                                                                16 * hrpx),
+                                                    margin:
+                                                        EdgeInsets.symmetric(
+                                                      horizontal: 20 * rpx,
                                                     ),
-                                                  ],
-                                                ))
-                                          ],
-                                        ),
+                                                    // decoration: BoxDecoration(
+                                                    //     border: Border(
+                                                    //         bottom: BorderSide(
+                                                    //             color: Color(theme
+                                                    //                 .thirdColor)))),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: <Widget>[
+                                                        Text('Rating',
+                                                            style: TextStyle(
+                                                                fontSize: 18)),
+                                                        Radio(
+                                                          activeColor: Color(
+                                                              theme.thirdColor),
+                                                          value: 'rating',
+                                                          groupValue: sort,
+                                                          onChanged:
+                                                              (String value) {
+                                                            setState(() {
+                                                              sort = value;
+                                                              searching = true;
+                                                            });
+                                                            if (!searched) {
+                                                              resturants
+                                                                  .getResturantFeed(
+                                                                      auth,
+                                                                      price:
+                                                                          parsePrice(),
+                                                                      sort:
+                                                                          sort)
+                                                                  .then((_) {
+                                                                setState(() {
+                                                                  searching =
+                                                                      false;
+                                                                });
+                                                              });
+                                                            } else {
+                                                              _searchBarController
+                                                                  .replayLastSearch();
+                                                            }
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ))
+                                              ],
+                                            )),
                                       );
                                     });
                               },
@@ -389,7 +420,7 @@ class _SearchState extends State<Search> {
                 crossAxisCount: 1,
                 onItemFound: (Resturant resturant, int index) {
                   return Resturant.createItem(
-                      resturant, theme, hrpx, rpx, context, resturants);
+                      resturant, theme, hrpx, rpx, context, resturants, auth);
                 },
               ),
             )));
