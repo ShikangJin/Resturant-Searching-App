@@ -82,3 +82,54 @@ Future getResturantDetail(auth, String id) async {
   });
   return result;
 }
+
+Future setFavorite(auth, String id) async {
+  print('http://10.0.2.2:8080/business/favorite');
+  var result = await Dio()
+      .post('http://10.0.2.2:8080/business/favorite',
+          data: {
+            "id": id,
+          },
+          options: Options(
+            headers: {
+              HttpHeaders.authorizationHeader: "Bearer " + auth.token,
+            },
+          ))
+      .catchError((error) {
+    print(error);
+  });
+  return result;
+}
+
+Future cancelFavorite(auth, String id) async {
+  print('http://10.0.2.2:8080/business/favorite');
+  var result = await Dio()
+      .delete('http://10.0.2.2:8080/business/favorite',
+          data: {
+            "id": id,
+          },
+          options: Options(
+            headers: {
+              HttpHeaders.authorizationHeader: "Bearer " + auth.token,
+            },
+          ))
+      .catchError((error) {
+    print(error);
+  });
+  return result;
+}
+
+Future getFavorite(auth) async {
+  print('http://10.0.2.2:8080/business/favorite');
+  var result = await Dio()
+      .get('http://10.0.2.2:8080/business/favorite',
+          options: Options(
+            headers: {
+              HttpHeaders.authorizationHeader: "Bearer " + auth.token,
+            },
+          ))
+      .catchError((error) {
+    print(error);
+  });
+  return result;
+}

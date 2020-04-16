@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:cmpe277_project/entity/Resturant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -13,31 +11,44 @@ class ResturantPage extends StatefulWidget {
     @required this.resturants,
     @required this.curResturant,
     @required this.auth,
+    @required this.gMap,
   }) : super(key: key);
   final theme;
   final resturants;
   final curResturant;
   final auth;
+  final gMap;
   @override
   _ResturantPageState createState() => _ResturantPageState();
 }
 
 class _ResturantPageState extends State<ResturantPage> {
-  Completer<GoogleMapController> _controller = Completer();
+  // Completer<GoogleMapController> _controller;
   List<String> photoList;
+  bool favorite = false;
+  bool loading = false;
 
   @override
   void initState() {
     super.initState();
+    // _controller = Completer();
     widget.resturants
         .getCommentByResturant(widget.auth, widget.curResturant.id);
     widget.resturants
         .getDetail(widget.auth, widget.curResturant.id)
         .then((res) {
       setState(() {
-        photoList = res;
+        photoList = res[0];
+        favorite = res[1];
       });
     });
+  }
+
+  @override
+  void dispose() {
+    photoList.clear();
+    print('dispose resturant');
+    super.dispose();
   }
 
   getCommentItem(comment, hrpx, rpx) {
@@ -80,14 +91,15 @@ class _ResturantPageState extends State<ResturantPage> {
   Widget build(BuildContext context) {
     double rpx = MediaQuery.of(context).size.width / 750;
     double hrpx = MediaQuery.of(context).size.height / 750;
-    final CameraPosition _kGooglePlex = CameraPosition(
-      target: LatLng(widget.curResturant.lat, widget.curResturant.lng),
-      zoom: 20,
-    );
-    Set<Marker> markers = Set();
-    markers.add(Marker(
-        markerId: MarkerId(widget.curResturant.name),
-        position: LatLng(widget.curResturant.lat, widget.curResturant.lng)));
+    // final CameraPosition position = CameraPosition(
+    //   target: LatLng(widget.curResturant.lat, widget.curResturant.lng),
+    //   zoom: 20,
+    // );
+
+    // Set<Marker> markers = Set();
+    // markers.add(Marker(
+    //     markerId: MarkerId(widget.curResturant.name),
+    //     position: LatLng(widget.curResturant.lat, widget.curResturant.lng)));
     var commentlist = widget.resturants?.commentList?.map((comment) {
       return getCommentItem(comment, hrpx, rpx);
     });
@@ -115,17 +127,52 @@ class _ResturantPageState extends State<ResturantPage> {
                           image: NetworkImage(widget.curResturant.imageUrl),
                         )),
                     Container(
-                      margin: EdgeInsets.only(
-                          top: 10 * hrpx,
-                          left: 30 * rpx,
-                          bottom: 4 * hrpx,
-                          right: 30 * rpx),
-                      child: Text(
-                        widget.curResturant.name,
-                        style: TextStyle(
-                            fontSize: 30, fontWeight: FontWeight.bold),
-                      ),
-                    ),
+                        margin: EdgeInsets.only(
+                            top: 10 * hrpx,
+                            left: 30 * rpx,
+                            bottom: 4 * hrpx,
+                            right: 30 * rpx),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              widget.curResturant.name,
+                              style: TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold),
+                            ),
+                            GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  if (favorite) {
+                                    widget.resturants
+                                        .removeFavorite(
+                                            widget.auth, widget.curResturant.id)
+                                        .then((res) {
+                                      setState(() {
+                                        loading = false;
+                                        favorite = res ? false : true;
+                                      });
+                                    });
+                                  } else {
+                                    widget.resturants
+                                        .addFavorite(
+                                            widget.auth, widget.curResturant.id)
+                                        .then((res) {
+                                      setState(() {
+                                        loading = false;
+                                        favorite = res ? true : false;
+                                      });
+                                    });
+                                  }
+                                },
+                                child: Icon(Icons.favorite,
+                                    color: favorite
+                                        ? Color(widget.theme.thirdColor)
+                                        : Colors.grey))
+                          ],
+                        )),
                     Container(
                       margin: EdgeInsets.only(
                           top: 4 * hrpx,
@@ -173,19 +220,27 @@ class _ResturantPageState extends State<ResturantPage> {
                           style: TextStyle(color: Colors.grey[600])),
                     ),
                     Container(
-                        margin: EdgeInsets.only(
-                          top: 10 * hrpx,
-                          bottom: 4 * hrpx,
-                        ),
-                        height: 160 * hrpx,
-                        width: 750 * rpx,
-                        child: GoogleMap(
-                            mapType: MapType.normal,
-                            initialCameraPosition: _kGooglePlex,
-                            onMapCreated: (GoogleMapController controller) {
-                              _controller.complete(controller);
-                            },
-                            markers: markers)),
+                      margin: EdgeInsets.only(
+                        top: 10 * hrpx,
+                        bottom: 4 * hrpx,
+                      ),
+                      height: 160 * hrpx,
+                      width: 750 * rpx,
+                      child: widget.gMap.getMap(
+                          LatLng(
+                              widget.curResturant.lat, widget.curResturant.lng),
+                          Marker(
+                              markerId: MarkerId(widget.curResturant.name),
+                              position: LatLng(widget.curResturant.lat,
+                                  widget.curResturant.lng))),
+                      // GoogleMap(
+                      //     mapType: MapType.normal,
+                      //     initialCameraPosition: _kGooglePlex,
+                      //     onMapCreated: (GoogleMapController controller) {
+                      //       _controller.complete(controller);
+                      //     },
+                      //     markers: markers)
+                    ),
                     photoList != null && photoList.length > 0
                         ? Container(
                             margin: EdgeInsets.only(
@@ -261,7 +316,7 @@ class _ResturantPageState extends State<ResturantPage> {
                                     style: TextStyle(
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold))),
-                            ...commentlist
+                            ...(commentlist == null ? [] : commentlist)
                           ],
                         ))
                   ],

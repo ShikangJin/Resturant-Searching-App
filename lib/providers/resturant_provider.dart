@@ -17,30 +17,6 @@ class ResturantProvider with ChangeNotifier {
     searchResult = new List();
     recommendationList = new List();
     favoriteList = new List();
-
-    for (var i = 0; i < 4; i++)
-      recommendationList.add(Resturant(
-          '12',
-          'Recommendation',
-          'https://cdn.pixabay.com/photo/2019/02/22/19/54/restaurant-4014286_960_720.jpg',
-          4.0,
-          '\$\$',
-          ['Desserts, Chinese'],
-          '50 Skyport Dr, Ste 20, North San Jose',
-          0,
-          0));
-    for (var i = 0; i < 10; i++) {
-      favoriteList.add(Resturant(
-          '13',
-          'Favorite Resturant',
-          'https://cdn.pixabay.com/photo/2019/02/22/19/54/restaurant-4014286_960_720.jpg',
-          4.0,
-          '\$',
-          ['Ramen, Japenese'],
-          '50 Skyport Dr, Ste 20, North San Jose',
-          0,
-          0));
-    }
   }
 
   addResturant(curRes, list) {
@@ -128,9 +104,9 @@ class ResturantProvider with ChangeNotifier {
   }
 
   Future getDetail(auth, String id) async {
-    print('get detail');
     Response response = await getResturantDetail(auth, id);
     List<String> photoList = new List();
+    bool favorite = false;
     if (response?.data != null && response.data['message'] == 'success') {
       print(response);
       var photos = response.data['business']['photos'];
@@ -140,8 +116,42 @@ class ResturantProvider with ChangeNotifier {
           photoList.add(photo.toString());
         }
       }
+      favorite = response.data['business']['favorite'];
     }
-    return photoList;
+    final arr = [photoList, favorite];
+    return arr;
     // notifyListeners();
+  }
+
+  Future addFavorite(auth, String id) async {
+    Response response = await setFavorite(auth, id);
+    if (response?.data != null && response.data['message'] == 'success') {
+      fetchFavorite(auth);
+      return true;
+    }
+    return false;
+    // notifyListeners();
+  }
+
+  Future removeFavorite(auth, String id) async {
+    Response response = await cancelFavorite(auth, id);
+    if (response?.data != null && response.data['message'] == 'success') {
+      fetchFavorite(auth);
+      return true;
+    }
+    return false;
+    // notifyListeners();
+  }
+
+  Future fetchFavorite(auth) async {
+    Response response = await getFavorite(auth);
+    favoriteList = new List();
+    if (response?.data != null && response.data['message'] == 'success') {
+      for (var i = 0; i < response.data['businesses'].length; i++) {
+        final curRes = response.data['businesses'][i];
+        addResturant(curRes, favoriteList);
+      }
+    }
+    notifyListeners();
   }
 }

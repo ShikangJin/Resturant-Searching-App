@@ -1,5 +1,6 @@
 import 'package:cmpe277_project/entity/Resturant.dart';
 import 'package:cmpe277_project/providers/auth_provider.dart';
+import 'package:cmpe277_project/providers/map_provider.dart';
 import 'package:cmpe277_project/providers/resturant_provider.dart';
 import 'package:cmpe277_project/providers/theme_provider.dart';
 import 'package:flappy_search_bar/flappy_search_bar.dart';
@@ -22,7 +23,6 @@ class _SearchState extends State<Search> {
   String sort;
 
   @override
-  @override
   void initState() {
     super.initState();
     _searchBarController = SearchBarController();
@@ -39,12 +39,19 @@ class _SearchState extends State<Search> {
   }
 
   @override
+  void dispose() {
+    print('dispose search page');
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     double rpx = MediaQuery.of(context).size.width / 750;
     double hrpx = MediaQuery.of(context).size.height / 750;
     final theme = Provider.of<ThemeProvider>(context);
     final resturants = Provider.of<ResturantProvider>(context);
     final auth = Provider.of<AuthProvider>(context);
+    final gMap = Provider.of<MapProvider>(context);
     if (!initialFeed) {
       setState(() {
         searching = true;
@@ -91,8 +98,15 @@ class _SearchState extends State<Search> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 ...resturants.feedList.map(
-                                  (feed) => Resturant.createItem(feed, theme,
-                                      hrpx, rpx, context, resturants, auth),
+                                  (feed) => Resturant.createItem(
+                                      feed,
+                                      theme,
+                                      hrpx,
+                                      rpx,
+                                      context,
+                                      resturants,
+                                      auth,
+                                      gMap),
                                 )
                               ],
                             )),
@@ -419,8 +433,8 @@ class _SearchState extends State<Search> {
                 crossAxisSpacing: 10,
                 crossAxisCount: 1,
                 onItemFound: (Resturant resturant, int index) {
-                  return Resturant.createItem(
-                      resturant, theme, hrpx, rpx, context, resturants, auth);
+                  return Resturant.createItem(resturant, theme, hrpx, rpx,
+                      context, resturants, auth, gMap);
                 },
               ),
             )));
