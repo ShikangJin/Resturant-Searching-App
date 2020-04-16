@@ -154,4 +154,13 @@ class ResturantProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  Future addComment(auth, String id, String text, double rating) async {
+    Response response = await sendComment(auth, id, text, rating);
+    if (response?.data != null && response.data['message'] == 'success') {
+      getCommentByResturant(auth, id);
+      return true;
+    }
+    return false;
+  }
 }

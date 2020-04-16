@@ -1,4 +1,5 @@
 import 'package:cmpe277_project/entity/Resturant.dart';
+import 'package:cmpe277_project/pages/comment.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
@@ -312,10 +313,42 @@ class _ResturantPageState extends State<ResturantPage> {
                                     border: Border(
                                         bottom: BorderSide(
                                             color: widget.theme.textColor))),
-                                child: Text('Comments',
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold))),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Container(
+                                        margin:
+                                            EdgeInsets.only(bottom: 8 * hrpx),
+                                        child: MaterialButton(
+                                          minWidth: double
+                                              .maxFinite, // set minWidth to maxFinite
+                                          color:
+                                              Color(widget.theme.primaryColor),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        CommentPage(
+                                                          theme: widget.theme,
+                                                          resturants:
+                                                              widget.resturants,
+                                                          curResturant: widget
+                                                              .curResturant,
+                                                          auth: widget.auth,
+                                                        )));
+                                          },
+                                          child: Text("Add Comment",
+                                              style: TextStyle(
+                                                  color:
+                                                      widget.theme.textColor)),
+                                        )),
+                                    Text('Comments',
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                )),
                             ...(commentlist == null ? [] : commentlist)
                           ],
                         ))

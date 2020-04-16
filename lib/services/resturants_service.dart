@@ -133,3 +133,19 @@ Future getFavorite(auth) async {
   });
   return result;
 }
+
+Future sendComment(auth, String id, String text, double rating) async {
+  print('http://10.0.2.2:8080/comment/send');
+  var result = await Dio()
+      .post('http://10.0.2.2:8080/comment/send',
+          data: {"id": id, "text": text, "rating": rating},
+          options: Options(
+            headers: {
+              HttpHeaders.authorizationHeader: "Bearer " + auth.token,
+            },
+          ))
+      .catchError((error) {
+    print(error);
+  });
+  return result;
+}
